@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
 )
 
 type config struct {
@@ -23,6 +24,7 @@ type dbconfig struct {
 
 type application struct {
 	config config
+	logger *zap.SugaredLogger
 }
 
 func (app *application) mount() *echo.Echo {
@@ -47,5 +49,6 @@ func (app *application) run(e *echo.Echo) error {
 		IdleTimeout:  time.Minute,
 	}
 
+	app.logger.Infow("The server is running", "addr", app.config.addr)
 	return server.ListenAndServe()
 }

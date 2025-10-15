@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"github.com/saksham-kumar-14/Repliq/backend/internal/env"
+	"go.uber.org/zap"
 )
 
 const version = "0.1"
@@ -20,10 +19,16 @@ func main() {
 		},
 	}
 
+	// logger
+	logger := zap.Must(zap.NewProduction()).Sugar()
+	defer logger.Sync()
+
+	// main app
 	app := &application{
 		config: cfg,
+		logger: logger,
 	}
 
 	mux := app.mount()
-	log.Fatal(app.run(mux))
+	logger.Info(app.run(mux))
 }
