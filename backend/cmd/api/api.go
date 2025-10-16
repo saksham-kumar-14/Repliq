@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	ratelimiter "github.com/saksham-kumar-14/Repliq/backend/internal/rateLimiter"
 	"github.com/saksham-kumar-14/Repliq/backend/internal/store"
 	"go.uber.org/zap"
 )
@@ -14,6 +15,7 @@ type config struct {
 	db          dbconfig
 	env         string
 	frontendURL string
+	ratelimiter ratelimiterConfig
 }
 
 type dbconfig struct {
@@ -23,17 +25,25 @@ type dbconfig struct {
 	maxIdleTime  string
 }
 
+type ratelimiterConfig struct {
+	ReqPerTimeFrame int
+	Burst           int
+	TimeFrame       time.Duration
+}
+
 type application struct {
-	config config
-	logger *zap.SugaredLogger
-	store  store.Storage
+	config      config
+	logger      *zap.SugaredLogger
+	store       store.Storage
+	rateLimiter *ratelimiter.RateLimiter
 }
 
 func (app *application) mount() *echo.Echo {
 	e := echo.New()
 
+	e.Use(app.rateLimiter.Limit)
+
 	health := e.Group("/v1/health")
-	health.Use(JWTAuth)
 	health.GET("", app.healthChecker)
 
 	users := e.Group("/v1/user")

@@ -1,8 +1,11 @@
 package main
 
 import (
+	"time"
+
 	"github.com/saksham-kumar-14/Repliq/backend/internal/db"
 	"github.com/saksham-kumar-14/Repliq/backend/internal/env"
+	ratelimiter "github.com/saksham-kumar-14/Repliq/backend/internal/rateLimiter"
 	"github.com/saksham-kumar-14/Repliq/backend/internal/store"
 	"go.uber.org/zap"
 )
@@ -18,6 +21,11 @@ func main() {
 			maxOpenConns: env.GetInt("MAX_OPEN_CONNS", 30),
 			maxIdleConns: env.GetInt("MAX_IDLE_CONNS", 30),
 			maxIdleTime:  "15m",
+		},
+		ratelimiter: ratelimiterConfig{
+			ReqPerTimeFrame: env.GetInt("RATELIMITER_REQ_COUNT", 10),
+			Burst:           env.GetInt("RATELIMITER_BURST", 10),
+			TimeFrame:       time.Second * 5,
 		},
 	}
 
@@ -43,11 +51,19 @@ func main() {
 	// store
 	store := store.NewDbStorage(db)
 
+	// ratelimiter
+	rateLimiter := ratelimiter.New(
+		cfg.ratelimiter.ReqPerTimeFrame,
+		cfg.ratelimiter.Burst,
+		cfg.ratelimiter.TimeFrame,
+	)
+
 	// main app
 	app := &application{
-		config: cfg,
-		logger: logger,
-		store:  store,
+		config:      cfg,
+		logger:      logger,
+		store:       store,
+		rateLimiter: rateLimiter,
 	}
 
 	mux := app.mount()
