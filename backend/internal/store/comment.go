@@ -22,6 +22,19 @@ type Comment struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+func (s *CommentStore) GetAll(ctx context.Context) ([]*Comment, error) {
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeout)
+	defer cancel()
+
+	var comments []*Comment
+	err := s.db.WithContext(ctx).Find(&comments).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return comments, nil
+}
+
 func (s *CommentStore) GetByID(ctx context.Context, commentID uint) (*Comment, error) {
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeout)
 	defer cancel()

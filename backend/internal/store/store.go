@@ -28,6 +28,7 @@ type Storage struct {
 	Comment interface {
 		Create(context.Context, *Comment) error
 		GetByID(context.Context, uint) (*Comment, error)
+		GetAll(context.Context) ([]*Comment, error)
 		PatchByID(context.Context, uint, map[string]interface{}) (*Comment, error)
 		DeleteByID(context.Context, uint) error
 	}

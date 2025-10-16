@@ -23,9 +23,9 @@ func main() {
 			maxIdleTime:  "15m",
 		},
 		ratelimiter: ratelimiterConfig{
-			ReqPerTimeFrame: env.GetInt("RATELIMITER_REQ_COUNT", 10),
-			Burst:           env.GetInt("RATELIMITER_BURST", 10),
-			TimeFrame:       time.Second * 5,
+			ReqPerTimeFrame: env.GetInt("RATELIMITER_REQ_COUNT", 100),
+			Burst:           env.GetInt("RATELIMITER_BURST", 20),
+			TimeFrame:       time.Second,
 		},
 	}
 

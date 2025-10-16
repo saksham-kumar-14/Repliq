@@ -10,6 +10,17 @@ import (
 	"github.com/saksham-kumar-14/Repliq/backend/internal/store"
 )
 
+func (app *application) getAllCommentsHandler(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	comments, err := app.store.Comment.GetAll(ctx)
+	if err != nil {
+		return app.internalServerError(c, err)
+	}
+
+	return writeJSON(c, http.StatusOK, comments)
+}
+
 func (app *application) getCommentHandler(c echo.Context) error {
 	idParam := c.Param("id")
 	commentID, err := strconv.Atoi(idParam)
