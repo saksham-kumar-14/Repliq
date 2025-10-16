@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"errors"
-	"log"
 	"strings"
 	"time"
 
@@ -59,8 +58,6 @@ func (s *UserStore) VerifyUser(ctx context.Context, email string, password strin
 		}
 		return nil, err
 	}
-
-	log.Println("ASdfASD", user.Password)
 
 	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(password)); err != nil {
 		return nil, errors.New("invalid email or password")

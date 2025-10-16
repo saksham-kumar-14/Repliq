@@ -35,6 +35,9 @@ func main() {
 	if err := db.AutoMigrate(&store.User{}); err != nil {
 		logger.Fatalw("failed to migrate database", "error", err)
 	}
+	if err := db.AutoMigrate(&store.Comment{}); err != nil {
+		logger.Fatalw("failed to migrate database", "erorr", err)
+	}
 	logger.Info("Database migrated successfully!")
 
 	// store

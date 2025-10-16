@@ -32,12 +32,21 @@ type application struct {
 func (app *application) mount() *echo.Echo {
 	e := echo.New()
 
-	e.GET("/v1/health", app.healthChecker)
+	health := e.Group("/v1/health")
+	health.Use(JWTAuth)
+	health.GET("", app.healthChecker)
 
 	users := e.Group("/v1/user")
 	users.POST("", app.registerUserHandler)
 	users.GET("/:id", app.getUserHandler)
 	users.POST("/login", app.loginUserHandler)
+
+	posts := e.Group("/v1/post")
+	posts.Use(JWTAuth)
+	posts.GET("/:id", app.getCommentHandler)
+	posts.POST("/", app.createCommentHandler)
+	posts.PATCH("/:id", app.patchCommentHandler)
+	posts.DELETE("/:id", app.deleteCommentHandler)
 
 	return e
 }

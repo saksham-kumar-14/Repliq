@@ -7,7 +7,7 @@ import (
 	"github.com/saksham-kumar-14/Repliq/backend/internal/env"
 )
 
-var jwtSecret = []byte(env.GetString("JWT_SECRET", "supersecret"))
+var jwtSecret = []byte(env.GetString("JWT_SECRET", "secret"))
 
 func GenerateJWT(userID uint, email string) (string, error) {
 	claims := jwt.MapClaims{

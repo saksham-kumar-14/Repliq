@@ -13,6 +13,7 @@ var (
 	ErrAlreadyExists     = errors.New("resource already exists")
 	ErrDuplicateEmail    = errors.New("email already exists")
 	ErrDuplicateUsername = errors.New("username already exists")
+	ErrDuplicateComment  = errors.New("Comment already exists")
 
 	QueryTimeout = time.Second * 5
 )
@@ -23,10 +24,18 @@ type Storage struct {
 		GetByID(context.Context, uint) (*User, error)
 		VerifyUser(context.Context, string, string) (*User, error)
 	}
+
+	Comment interface {
+		Create(context.Context, *Comment) error
+		GetByID(context.Context, uint) (*Comment, error)
+		PatchByID(context.Context, uint, map[string]interface{}) (*Comment, error)
+		DeleteByID(context.Context, uint) error
+	}
 }
 
 func NewDbStorage(db *gorm.DB) Storage {
 	return Storage{
-		User: &UserStore{db: db},
+		User:    &UserStore{db: db},
+		Comment: &CommentStore{db: db},
 	}
 }
