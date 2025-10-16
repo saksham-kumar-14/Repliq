@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/saksham-kumar-14/Repliq/backend/internal/db"
 	"github.com/saksham-kumar-14/Repliq/backend/internal/env"
+	"github.com/saksham-kumar-14/Repliq/backend/internal/store"
 	"go.uber.org/zap"
 )
 
@@ -23,10 +25,26 @@ func main() {
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
 
+	// database
+	db, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Info("Database Connected!")
+
+	if err := db.AutoMigrate(&store.User{}); err != nil {
+		logger.Fatalw("failed to migrate database", "error", err)
+	}
+	logger.Info("Database migrated successfully!")
+
+	// store
+	store := store.NewDbStorage(db)
+
 	// main app
 	app := &application{
 		config: cfg,
 		logger: logger,
+		store:  store,
 	}
 
 	mux := app.mount()

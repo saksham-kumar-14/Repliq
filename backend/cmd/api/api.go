@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/saksham-kumar-14/Repliq/backend/internal/store"
 	"go.uber.org/zap"
 )
 
@@ -25,16 +26,18 @@ type dbconfig struct {
 type application struct {
 	config config
 	logger *zap.SugaredLogger
+	store  store.Storage
 }
 
 func (app *application) mount() *echo.Echo {
 	e := echo.New()
 
-	// Routes
-	v1 := e.Group("/v1")
-	{
-		v1.GET("/health", app.healthChecker)
-	}
+	e.GET("/v1/health", app.healthChecker)
+
+	users := e.Group("/v1/user")
+	users.POST("", app.registerUserHandler)
+	users.GET("/:id", app.getUserHandler)
+	users.POST("/login", app.loginUserHandler)
 
 	return e
 }
