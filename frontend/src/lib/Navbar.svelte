@@ -1,5 +1,18 @@
+<script lang="ts">
+    import { isLoggedIn } from "../store/auth";
+
+    function handleLogout(e: Event) {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.reload();
+    }
+</script>
+
 <nav class="nav">
     <a class="nav-logo" href="/">Repliq</a>
+    {#if isLoggedIn}
+        <button on:click={handleLogout}>Logout</button>
+    {/if}
 </nav>
 
 <style>

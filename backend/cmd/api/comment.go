@@ -28,7 +28,7 @@ func (app *application) getCommentHandler(c echo.Context) error {
 		return app.internalServerError(c, err)
 	}
 
-	comment, err := app.store.User.GetByID(c.Request().Context(), uint(commentID))
+	comment, err := app.store.Comment.GetByID(c.Request().Context(), uint(commentID))
 	if err != nil {
 		switch err {
 		case store.ErrNotFound:

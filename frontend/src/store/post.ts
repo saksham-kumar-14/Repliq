@@ -1,4 +1,5 @@
 import { get, writable, type Writable } from "svelte/store";
+import { user } from "./auth";
 
 export interface Comment {
   id: number;
@@ -8,6 +9,7 @@ export interface Comment {
   user_id: number;
   created_at: string;
   updated_at: string;
+  username: string;
 }
 
 export const comments: Writable<Comment[] | null> = writable(null);
@@ -28,7 +30,29 @@ export async function getPosts() {
     }
 
     const data: Comment[] = await resp.json();
-    comments.set(data);
+    const tmp = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const usres = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/user/${data[i].user_id}`,
+      );
+      const usrdata = await usres.json();
+      if (usrdata) {
+        tmp.push({
+          id: data[i].id,
+          parent_id: data[i].parent_id,
+          text: data[i].text,
+          upvotes: data[i].upvotes,
+          user_id: data[i].user_id,
+          created_at: data[i].created_at,
+          updated_at: data[i].updated_at,
+          username: usrdata.username,
+          avatar: usrdata.avatar,
+        });
+      }
+    }
+
+    comments.set(tmp);
   } catch (err) {
     console.error("Failed to fetch posts:", err);
     comments.set([]);
@@ -65,15 +89,15 @@ export async function addComment(
       throw new Error("Posting failed.");
     }
     const data = await res.json();
-
     if (data) {
       let temp = get(comments);
+      data["avatar"] = get(user)?.avatar;
       temp?.push(data);
       comments.set(temp);
     } else {
       alert("Unable to post");
     }
   } catch (err) {
-    console.log("Failed to post: ", err);
+    console.error("Failed to post: ", err);
   }
 }

@@ -3,7 +3,7 @@
     import { user } from "../store/auth";
     import { get } from "svelte/store";
 
-    export let comment;
+    export let comment: any;
     export let depth = 0;
 
     let showReplyBox = false;
@@ -17,10 +17,49 @@
             showReplyBox = false;
         }
     }
+
+    let upvotes_reply_id = 0;
+    let upvotes = 0;
+    async function handleUpvotes() {
+        const updates = {
+            upvotes: upvotes + 1,
+        };
+        if (upvotes_reply_id != 0) {
+            const token = localStorage.getItem("token");
+            const res = await fetch(
+                `${import.meta.env.VITE_BACKEND_URL}/post/${upvotes_reply_id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(updates),
+                },
+            );
+            const data = await res.json();
+        }
+    }
 </script>
 
 <div class="comment" style="margin-left: {depth * 1}rem;">
+    <div class="comment-user">
+        <img class="profile-img" src={comment.avatar} alt="profile" />
+        <p>{comment.username}</p>
+        <span>{comment.updated_at}</span>
+    </div>
     <p>{comment.text}</p>
+    <div class="comment-upvotes">
+        <span>{comment.upvotes}</span>
+        <button
+            on:click={() => {
+                upvotes = comment.upvotes;
+                upvotes_reply_id = comment.id;
+                comment.upvotes++;
+                handleUpvotes();
+            }}>^</button
+        >
+    </div>
 
     {#if showReplyBox}
         <div class="reply-box">
@@ -73,5 +112,18 @@
 
     .reply-btn:hover {
         text-decoration: underline;
+    }
+
+    .comment-user,
+    .comment-upvotes {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 6px;
+    }
+
+    .profile-img {
+        width: 50px;
+        height: 50px;
     }
 </style>

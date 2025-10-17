@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"math/rand/v2"
 	"net/http"
 	"strconv"
 
@@ -60,10 +61,14 @@ func (app *application) registerUserHandler(c echo.Context) error {
 		return app.internalServerError(c, errors.New("failed to hash password"))
 	}
 
+	// random avatar
+	avatarId := rand.IntN(100) + 1
+	avatar_link := "https://avatar.iran.liara.run/public/" + strconv.Itoa(avatarId)
 	user := &store.User{
 		Username: req.Username,
 		Email:    req.Email,
 		Password: hashed,
+		Avatar:   avatar_link,
 	}
 
 	err = app.store.User.Create(c.Request().Context(), user)
@@ -76,7 +81,7 @@ func (app *application) registerUserHandler(c echo.Context) error {
 		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: user.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
-		Avatar:    "thisthat",
+		Avatar:    user.Avatar,
 	}
 
 	return writeJSON(c, http.StatusCreated, resp)

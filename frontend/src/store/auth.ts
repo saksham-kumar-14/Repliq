@@ -1,9 +1,10 @@
-import { writable, type Writable } from "svelte/store";
+import { get, writable, type Writable } from "svelte/store";
 
 export interface User {
   user_id: number;
   email: string;
   username: string;
+  avatar: string;
 }
 
 export interface AuthResp {
@@ -38,8 +39,25 @@ export async function checkAuth(): Promise<void> {
     const data: AuthResp = await res.json();
 
     if (data.valid) {
-      isLoggedIn.set(true);
-      user.set(data.user ?? null);
+      const usres = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/user/${data.user?.user_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      const usrdata = await usres.json();
+      if (usrdata?.id) {
+        isLoggedIn.set(true);
+        data.user["avatar"] = usrdata["avatar"];
+        user.set(data.user);
+      } else {
+        isLoggedIn.set(false);
+        user.set(null);
+      }
     } else {
       isLoggedIn.set(false);
       user.set(null);
@@ -72,13 +90,12 @@ export async function register(
     });
 
     if (!res.ok) {
-      throw new Error("Authentication using token failed.");
+      throw new Error("Registration failed.");
     }
 
     const data = await res.json();
 
     if (data) {
-      isLoggedIn.set(true);
       user.set(data ?? null);
       alert("Registered!");
 
@@ -98,7 +115,7 @@ export async function register(
         );
 
         if (!loginres.ok) {
-          throw new Error("Authentication using token failed.");
+          throw new Error("Login after registration failed.");
         }
 
         const logindata = await loginres.json();
@@ -106,11 +123,14 @@ export async function register(
         if (logindata.token) {
           isLoggedIn.set(true);
           localStorage.setItem("token", logindata.token);
+          // Fetch complete user data after login
+          await checkAuth();
         } else {
           isLoggedIn.set(false);
+          user.set(null);
         }
       } catch (err) {
-        console.log("Registered but Login failed : ", err);
+        console.error("Registered but Login failed: ", err);
         isLoggedIn.set(false);
         user.set(null);
       }
@@ -119,7 +139,7 @@ export async function register(
       user.set(null);
     }
   } catch (err) {
-    console.log("Registration failed : ", err);
+    console.error("Registration failed: ", err);
     isLoggedIn.set(false);
     user.set(null);
   }
@@ -141,19 +161,20 @@ export async function login(email: string, password: string): Promise<void> {
     });
 
     if (!res.ok) {
-      throw new Error("Authentication using token failed.");
+      throw new Error("Login failed.");
     }
 
     const data = await res.json();
 
     if (data.token) {
-      isLoggedIn.set(true);
       localStorage.setItem("token", data.token);
+      await checkAuth();
     } else {
       isLoggedIn.set(false);
+      user.set(null);
     }
   } catch (err) {
-    console.log("Login failed : ", err);
+    console.error("Login failed: ", err);
     isLoggedIn.set(false);
     user.set(null);
   }

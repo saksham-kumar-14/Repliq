@@ -5,6 +5,7 @@
     import { get } from "svelte/store";
     import buildCommentTree from "../utils/nestedComments";
     import CommentThread from "./CommentThread.svelte";
+    import Sort from "./sort.svelte";
 
     let comment_txt = "";
     let parentID = 0;
@@ -26,6 +27,7 @@
 </script>
 
 <div>
+    <Sort />
     <form on:submit={handleAddComment} class="give-comment">
         <input
             type="text"
@@ -58,25 +60,5 @@
 
     .comments {
         margin-top: 1rem;
-    }
-
-    .reply-box {
-        margin-left: 1.5rem;
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
-
-    .reply-comment-btn {
-        margin-left: 1rem;
-        margin-top: 0.25rem;
-        background: none;
-        border: none;
-        color: #007bff;
-        cursor: pointer;
-    }
-
-    .reply-comment-btn:hover {
-        text-decoration: underline;
     }
 </style>

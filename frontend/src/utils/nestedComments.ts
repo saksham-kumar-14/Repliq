@@ -5,7 +5,6 @@ export default function buildCommentTree(comments: Comment[]): any[] {
   const roots: any[] = [];
 
   comments.forEach((c) => map.set(c.id, { ...c, replies: [] }));
-  console.log(comments);
 
   map.forEach((comment) => {
     if (comment.parent_id === 0) {
@@ -17,8 +16,6 @@ export default function buildCommentTree(comments: Comment[]): any[] {
       }
     }
   });
-
-  console.log(roots);
 
   return roots;
 }
