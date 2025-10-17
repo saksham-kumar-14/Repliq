@@ -52,13 +52,57 @@
 </div>
 
 <style>
+    div {
+        padding: 2rem;
+    }
     .give-comment {
         display: flex;
         gap: 0.5rem;
         margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    .give-comment input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #555;
+        background-color: #1e1e1e;
+        color: #f0f0f0;
+        font-size: 1rem;
+    }
+
+    .give-comment input:focus {
+        outline: none;
+        border-color: #646cff;
+        box-shadow: 0 0 5px #646cff;
+    }
+
+    .give-comment button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        background-color: #646cff;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .give-comment button:hover {
+        background-color: #5058d4;
+        transform: scale(1.05);
     }
 
     .comments {
         margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .comments p {
+        color: #ccc;
     }
 </style>

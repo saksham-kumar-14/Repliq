@@ -96,43 +96,124 @@
 
 <style>
     .comment {
-        border-left: 2px solid #ddd;
+        border-left: 2px solid #646cff;
         padding-left: 1rem;
         margin: 0.75rem 0;
+        background: #1e1e1e;
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: #f0f0f0;
+        font-family: sans-serif;
     }
 
-    .replies {
-        margin-top: 0.5rem;
-    }
-
-    .reply-box {
+    .comment-user {
         display: flex;
-        gap: 0.5rem;
-        margin-top: 0.25rem;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    .profile-img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #646cff;
+    }
+
+    .comment-user p {
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .comment-user span {
+        font-size: 0.75rem;
+        color: #aaa;
+    }
+
+    .comment-upvotes {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 4px;
+    }
+
+    .comment-upvotes span {
+        font-size: 0.85rem;
+    }
+
+    .comment-upvotes button {
+        background-color: #646cff;
+        border: none;
+        color: #fff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition:
+            background-color 0.2s ease,
+            transform 0.1s ease;
+    }
+
+    .comment-upvotes button:hover {
+        background-color: #5058d4;
+        transform: scale(1.1);
     }
 
     .reply-btn {
         background: none;
         border: none;
-        color: #007bff;
+        color: #646cff;
         cursor: pointer;
-        margin-top: 0.25rem;
+        margin-top: 4px;
+        font-size: 0.85rem;
+        transition: color 0.2s ease;
     }
 
     .reply-btn:hover {
+        color: #5058d4;
         text-decoration: underline;
     }
 
-    .comment-user,
-    .comment-upvotes {
+    .reply-box {
         display: flex;
-        align-items: center;
-        justify-content: start;
-        gap: 6px;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
     }
 
-    .profile-img {
-        width: 50px;
-        height: 50px;
+    .reply-box input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #555;
+        background-color: #2c2c2c;
+        color: #f0f0f0;
+        font-size: 0.9rem;
+    }
+
+    .reply-box input:focus {
+        outline: none;
+        border-color: #646cff;
+        box-shadow: 0 0 5px #646cff;
+    }
+
+    .reply-box button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        background-color: #646cff;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .reply-box button:hover {
+        background-color: #5058d4;
+        transform: scale(1.05);
+    }
+
+    .replies {
+        margin-top: 0.5rem;
+        margin-left: 1rem;
     }
 </style>

@@ -36,11 +36,44 @@
 
 <div>
     <div>
-        Sory by:
+        Sort by:
         <button on:click={sortByNewest}>Newest</button>
         <button on:click={sortByOldest}>Oldest</button>
         <button on:click={sortByUpvotes}>Upvotes</button>
     </div>
 </div>
 
-<style></style>
+<style>
+    div > div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #1e1e1e;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        font-family: sans-serif;
+        color: #f0f0f0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    div > div button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        background-color: #646cff;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    div > div button:hover {
+        background-color: #5058d4;
+        transform: scale(1.05);
+    }
+
+    div > div button:active {
+        transform: scale(0.95);
+    }
+</style>
