@@ -1,18 +1,14 @@
 FROM oven/bun:1 AS builder
-
 WORKDIR /app
 
 COPY package.json ./
 COPY bun.lock* bun.lockb* ./
-
 RUN bun install
 
 COPY . .
-
 RUN bun run build
 
 FROM oven/bun:1-alpine
-
 WORKDIR /app
 
 COPY --from=builder /app/dist ./dist

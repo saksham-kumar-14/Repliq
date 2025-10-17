@@ -29,7 +29,7 @@ services:
       - "8000:8000"
     environment:
       - URL=:8000
-      - FRONTEND_URL=http://frontend:5173
+      - FRONTEND_URL=http://localhost:5173
       - DB_URL=postgresql://admin:admin@db:5432/repliq?sslmode=disable
       - JWT_SECRET=youcantjustdecodets
       - RATELIMITER_REQ_COUNT=100
@@ -69,7 +69,6 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./frontend/dist:/usr/share/nginx/html
     networks:
       - app-network
 
