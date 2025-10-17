@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { addComment } from "../store/post";
+    import { addComment, comments } from "../store/post";
     import { user } from "../store/auth";
     import { get } from "svelte/store";
 
@@ -38,6 +38,15 @@
                 },
             );
             const data = await res.json();
+
+            let tmp = get(comments);
+            if (tmp == null) tmp = [];
+            for (let i = 0; i < tmp.length; i++) {
+                if (tmp[i].id == upvotes_reply_id) {
+                    tmp[i] = data;
+                }
+            }
+            comments.set(tmp);
         }
     }
 </script>
