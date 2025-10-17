@@ -66,7 +66,6 @@ export async function addComment(
     }
     const data = await res.json();
 
-    console.log(data);
     if (data) {
       let temp = get(comments);
       temp?.push(data);

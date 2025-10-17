@@ -42,7 +42,7 @@ type application struct {
 func (app *application) mount() *echo.Echo {
 	e := echo.New()
 
-	e.Use(app.rateLimiter.Limit)
+	// e.Use(app.rateLimiter.Limit)
 
 	e.GET("/v1/api/token", TokenApi)
 
