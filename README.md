@@ -22,6 +22,45 @@ My submission for Inter IIT Dev
 ### Containerization
 - Docker
 
+### Deployment
+- Amazon ec2 instance with docker Containerization and nginx reverse Proxy
+- visit http://16.16.128.235
+
+## Run
+
+### Common commands
+```bash
+git clone https://github.com/saksham-kumar-14/Repliq
+cd ./Repliq
+```
+- Create `./backend/.env` according to `./backend/.env.example` provided
+
+### Using Docker
+```bash
+docker-compose up --build
+```
+- The website will run on `http://localhost`
+- Backend service will run on `http://localhost:8000`
+
+### Without Using Docker
+```bash
+git clone https://github.com/saksham-kumar-14/repliq
+```
+```bash
+cd ./backend
+go mod tidy
+go run ./cmd/api/*.go
+```
+In another terminal,
+```bash
+cd ./frontend
+bun install
+bun run dev
+```
+- The website will run on `http://localhost:5173`
+- Backend service will run on `http://localhost:8000`
+
+
 ## Features
 ### Backend
 - Features
@@ -87,37 +126,24 @@ My submission for Inter IIT Dev
 └── README.md
 ```
 
+### Models
+```go
+	type User struct {
+		ID        uint      `json:"id" gorm:"primaryKey"`
+		Username  string    `json:"username" gorm:"uniqueIndex"`
+		Avatar    string    `json:"avatar"`
+		Email     string    `json:"email" gorm:"uniqueIndex"`
+		Password  []byte    `json:"-"`
+		CreatedAt time.Time `json:"created_at"`
+	}
 
-## Run
-
-### Common commands
-```bash
-git clone https://github.com/saksham-kumar-14/Repliq
-cd ./Repliq
+	type Comment struct {
+		ID        uint      `json:"id" gorm:"primaryKey"`
+		ParentId  int       `json:"parent_id"`
+		Text      string    `json:"text"`
+		Upvotes   int       `json:"upvotes"`
+		UserId    uint      `json:"user_id"`
+		CreatedAt time.Time `json:"created_at"`
+		UpdatedAt time.Time `json:"updated_at"`
+	}
 ```
-- Create `./backend/.env` according to `./backend/.env.example` provided
-
-### Using Docker
-```bash
-docker-compose up --build
-```
-- The website will run on `http://localhost`
-- Backend service will run on `http://localhost:8000`
-
-### Without Using Docker
-```bash
-git clone https://github.com/saksham-kumar-14/repliq
-```
-```bash
-cd ./backend
-go mod tidy
-go run ./cmd/api/*.go
-```
-In another terminal,
-```bash
-cd ./frontend
-bun install
-bun run dev
-```
-- The website will run on `http://localhost:5173`
-- Backend service will run on `http://localhost:8000`
