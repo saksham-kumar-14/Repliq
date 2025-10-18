@@ -43,7 +43,7 @@
             if (tmp == null) tmp = [];
             for (let i = 0; i < tmp.length; i++) {
                 if (tmp[i].id == upvotes_reply_id) {
-                    tmp[i] = data;
+                    tmp[i].upvotes = upvotes + 1;
                 }
             }
             comments.set(tmp);

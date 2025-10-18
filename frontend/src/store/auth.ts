@@ -53,6 +53,7 @@ export async function checkAuth(): Promise<void> {
       if (usrdata?.id) {
         isLoggedIn.set(true);
         data.user["avatar"] = usrdata["avatar"];
+        data.user["username"] = usrdata["username"];
         user.set(data.user);
       } else {
         isLoggedIn.set(false);

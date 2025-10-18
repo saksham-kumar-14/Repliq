@@ -91,7 +91,9 @@ export async function addComment(
     const data = await res.json();
     if (data) {
       let temp = get(comments);
+      console.log(get(user));
       data["avatar"] = get(user)?.avatar;
+      data["username"] = get(user)?.username;
       temp?.push(data);
       comments.set(temp);
     } else {
