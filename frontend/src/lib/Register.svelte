@@ -1,5 +1,6 @@
 <script lang="ts">
     import { login, register } from "../store/auth";
+    import { toast } from "@zerodevx/svelte-toast";
 
     let username = "";
     let email = "";
@@ -7,6 +8,16 @@
 
     const handleSubmit = (event: Event) => {
         event.preventDefault();
+        if (password.length < 6) {
+            toast.push("Password must be greater than 5 characters", {
+                duration: 2000,
+            });
+            return;
+        } else if (username.length < 3) {
+            toast.push("Username must be greater than 3 characters", {
+                duration: 2000,
+            });
+        }
         register(username, email, password);
     };
 </script>
