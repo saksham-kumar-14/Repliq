@@ -92,7 +92,8 @@ My submission for Inter IIT Dev
 
 ### Common commands
 ```bash
-git clone https://github.com/saksham-kumar-14/repliq
+git clone https://github.com/saksham-kumar-14/Repliq
+cd ./Repliq
 ```
 - Create `./backend/.env` according to `./backend/.env.example` provided
 
