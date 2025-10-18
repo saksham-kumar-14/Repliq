@@ -8,6 +8,12 @@
 
     const handleSubmit = async (event: Event) => {
         event.preventDefault();
+        if (password.length < 6) {
+            toast.push("Password must be greater than 5 characters", {
+                duration: 2000,
+            });
+            return;
+        }
         await login(email, password);
         if (get(isLoggedIn)) {
             toast.push("Login Successful!", { duration: 2000 });
