@@ -28,17 +28,14 @@
         };
         if (upvotes_reply_id != 0) {
             const token = localStorage.getItem("token");
-            const res = await fetch(
-                `${import.meta.env.VITE_BACKEND_URL}/post/${upvotes_reply_id}`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(updates),
+            const res = await fetch(`/v1/post/${upvotes_reply_id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
-            );
+                body: JSON.stringify(updates),
+            });
             const data = await res.json();
 
             let tmp = get(comments);

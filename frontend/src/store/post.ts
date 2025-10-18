@@ -17,7 +17,7 @@ export const comments: Writable<Comment[] | null> = writable(null);
 export async function getPosts() {
   try {
     const token = localStorage.getItem("token");
-    const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}/post/`, {
+    const resp = await fetch(`/v1/post/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -33,9 +33,7 @@ export async function getPosts() {
     const tmp = [];
 
     for (let i = 0; i < data.length; i++) {
-      const usres = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/user/${data[i].user_id}`,
-      );
+      const usres = await fetch(`/v1/user/${data[i].user_id}`);
       const usrdata = await usres.json();
       if (usrdata) {
         tmp.push({
@@ -76,7 +74,7 @@ export async function addComment(
       parent_id: parentID,
     };
 
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/post/`, {
+    const res = await fetch(`/v1/post/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

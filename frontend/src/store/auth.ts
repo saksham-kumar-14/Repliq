@@ -24,7 +24,7 @@ export async function checkAuth(): Promise<void> {
   }
 
   try {
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/token`, {
+    const res = await fetch(`/v1/api/token`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -39,16 +39,13 @@ export async function checkAuth(): Promise<void> {
     const data: AuthResp = await res.json();
 
     if (data.valid) {
-      const usres = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/user/${data.user?.user_id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+      const usres = await fetch(`/v1/user/${data.user?.user_id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       const usrdata = await usres.json();
       if (usrdata?.id) {
         isLoggedIn.set(true);
@@ -77,7 +74,7 @@ export async function login(email: string, password: string): Promise<void> {
       password: password,
     };
 
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/login`, {
+    const res = await fetch(`/v1/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +114,7 @@ export async function register(
       password: password,
     };
 
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user`, {
+    const res = await fetch(`/v1/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -135,19 +132,16 @@ export async function register(
       user.set(data ?? null);
 
       try {
-        const loginres = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/user/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: email,
-              password: password,
-            }),
+        const loginres = await fetch(`/v1/user/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
 
         if (!loginres.ok) {
           throw new Error("Login after registration failed.");
