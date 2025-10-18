@@ -10,14 +10,16 @@ import (
 func New(rate int, burst int, period time.Duration) *RateLimiter {
 	rl := &RateLimiter{
 		visitors: make(map[string]*Visitor),
-		rate:     rate,
+		rate:     float64(rate),
 		burst:    burst,
 		period:   period,
 	}
 
 	go func() {
-		for {
-			time.Sleep(time.Minute)
+		ticker := time.NewTicker(time.Minute)
+		defer ticker.Stop()
+
+		for range ticker.C {
 			rl.cleanup()
 		}
 	}()
@@ -28,10 +30,10 @@ func New(rate int, burst int, period time.Duration) *RateLimiter {
 func (rl *RateLimiter) cleanup() {
 	rl.mu.Lock()
 	defer rl.mu.Unlock()
-	now := time.Now()
 
+	now := time.Now()
 	for ip, v := range rl.visitors {
-		for now.Sub(v.lastRequest) > rl.period*2 {
+		if now.Sub(v.lastRequest) > rl.period*2 {
 			delete(rl.visitors, ip)
 		}
 	}
@@ -44,29 +46,30 @@ func (rl *RateLimiter) Limit(next echo.HandlerFunc) echo.HandlerFunc {
 		rl.mu.Lock()
 		v, exists := rl.visitors[ip]
 		if !exists {
-			v = &Visitor{tokens: rl.burst, lastRequest: time.Now()}
+			v = &Visitor{
+				tokens:      float64(rl.burst),
+				lastRequest: time.Now(),
+			}
 			rl.visitors[ip] = v
 		}
 
 		now := time.Now()
 		elapsed := now.Sub(v.lastRequest)
-		// refill tokens
-		refill := int(elapsed.Seconds() * float64(rl.rate) / rl.period.Seconds())
-		if refill > 0 {
-			v.tokens += refill
-			if v.tokens > rl.burst {
-				v.tokens = rl.burst
-			}
-		}
 		v.lastRequest = now
 
-		if v.tokens > 0 {
+		refillTokens := (elapsed.Seconds() / rl.period.Seconds()) * rl.rate
+		v.tokens += refillTokens
+		if v.tokens > float64(rl.burst) {
+			v.tokens = float64(rl.burst)
+		}
+
+		if v.tokens >= 1 {
 			v.tokens--
 			rl.mu.Unlock()
 			return next(c)
 		}
-		rl.mu.Unlock()
 
+		rl.mu.Unlock()
 		return c.JSON(http.StatusTooManyRequests, map[string]string{
 			"error": "rate limit exceeded",
 		})
