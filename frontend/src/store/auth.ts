@@ -1,4 +1,4 @@
-import { get, writable, type Writable } from "svelte/store";
+import { writable, type Writable } from "svelte/store";
 
 export interface User {
   user_id: number;
@@ -65,6 +65,41 @@ export async function checkAuth(): Promise<void> {
     }
   } catch (err) {
     console.error("Auth check failed: ", err);
+    isLoggedIn.set(false);
+    user.set(null);
+  }
+}
+
+export async function login(email: string, password: string): Promise<void> {
+  try {
+    const userData = {
+      email: email,
+      password: password,
+    };
+
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!res.ok) {
+      throw new Error("Login failed.");
+    }
+
+    const data = await res.json();
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      await checkAuth();
+    } else {
+      isLoggedIn.set(false);
+      user.set(null);
+    }
+  } catch (err) {
+    console.error("Login failed: ", err);
     isLoggedIn.set(false);
     user.set(null);
   }
@@ -141,41 +176,6 @@ export async function register(
     }
   } catch (err) {
     console.error("Registration failed: ", err);
-    isLoggedIn.set(false);
-    user.set(null);
-  }
-}
-
-export async function login(email: string, password: string): Promise<void> {
-  try {
-    const userData = {
-      email: email,
-      password: password,
-    };
-
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
-
-    if (!res.ok) {
-      throw new Error("Login failed.");
-    }
-
-    const data = await res.json();
-
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      await checkAuth();
-    } else {
-      isLoggedIn.set(false);
-      user.set(null);
-    }
-  } catch (err) {
-    console.error("Login failed: ", err);
     isLoggedIn.set(false);
     user.set(null);
   }

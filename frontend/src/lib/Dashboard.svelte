@@ -45,7 +45,9 @@
             <p>No comments yet.</p>
         {:else}
             {#each nestedComments as comment}
-                <CommentThread {comment} />
+                <div class="comment-thread">
+                    <CommentThread {comment} />
+                </div>
             {/each}
         {/if}
     </div>
@@ -104,5 +106,9 @@
 
     .comments p {
         color: #ccc;
+    }
+
+    .comment-thread {
+        width: 60vw;
     }
 </style>

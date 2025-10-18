@@ -2,6 +2,8 @@
     import { get } from "svelte/store";
     import { comments } from "../store/post";
 
+    let currSort = "oldest";
+
     function sortByNewest() {
         let tmp = get(comments);
         if (tmp == null) tmp = [];
@@ -12,6 +14,7 @@
             );
         });
         comments.set(tmp);
+        currSort = "newest";
     }
 
     function sortByOldest() {
@@ -24,6 +27,7 @@
             );
         });
         comments.set(tmp);
+        currSort = "oldest";
     }
 
     function sortByUpvotes() {
@@ -31,15 +35,25 @@
         if (tmp == null) tmp = [];
         tmp.sort((a, b) => b.upvotes - a.upvotes);
         comments.set(tmp);
+        currSort = "upvotes";
     }
 </script>
 
 <div>
     <div>
         Sort by:
-        <button on:click={sortByNewest}>Newest</button>
-        <button on:click={sortByOldest}>Oldest</button>
-        <button on:click={sortByUpvotes}>Upvotes</button>
+        <button
+            class={currSort == "newest" && "highlight"}
+            on:click={sortByNewest}>Newest</button
+        >
+        <button
+            class={currSort == "oldest" && "highlight"}
+            on:click={sortByOldest}>Oldest</button
+        >
+        <button
+            class={currSort == "upvotes" && "highlight"}
+            on:click={sortByUpvotes}>Upvotes</button
+        >
     </div>
 </div>
 
@@ -75,5 +89,10 @@
 
     div > div button:active {
         transform: scale(0.95);
+    }
+
+    .highlight {
+        background-color: white;
+        color: black;
     }
 </style>

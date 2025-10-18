@@ -17,5 +17,10 @@
     "svelte-check": "^4.3.2",
     "typescript": "~5.9.3",
     "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "@zerodevx/svelte-toast": "^0.9.6",
+    "lucide-svelte": "^0.546.0",
+    "svelte-toast": "^1.0.0"
   }
 }

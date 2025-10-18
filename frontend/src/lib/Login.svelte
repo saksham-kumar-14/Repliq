@@ -1,12 +1,19 @@
 <script lang="ts">
-    import { login } from "../store/auth";
+    import { toast } from "@zerodevx/svelte-toast";
+    import { isLoggedIn, login } from "../store/auth";
+    import { get } from "svelte/store";
 
     let email = "";
     let password = "";
 
-    const handleSubmit = (event: Event) => {
+    const handleSubmit = async (event: Event) => {
         event.preventDefault();
-        login(email, password);
+        await login(email, password);
+        if (get(isLoggedIn)) {
+            toast.push("Login Successful!", { duration: 2000 });
+        } else {
+            toast.push("Invalid Credentials", { duration: 2000 });
+        }
     };
 </script>
 

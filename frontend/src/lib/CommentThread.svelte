@@ -2,6 +2,8 @@
     import { addComment, comments } from "../store/post";
     import { user } from "../store/auth";
     import { get } from "svelte/store";
+    import timeDiff from "../utils/timeDiff";
+    import { ArrowUp, Plus, Minus } from "lucide-svelte";
 
     export let comment: any;
     export let depth = 0;
@@ -49,25 +51,46 @@
             comments.set(tmp);
         }
     }
+
+    let showConvo = true;
 </script>
 
 <div class="comment" style="margin-left: {depth * 1}rem;">
     <div class="comment-user">
+        {#if showConvo}
+            <button
+                on:click={() => {
+                    showConvo = false;
+                }}
+            >
+                <Minus />
+            </button>
+        {:else}
+            <button
+                on:click={() => {
+                    showConvo = true;
+                }}
+            >
+                <Plus />
+            </button>
+        {/if}
         <img class="profile-img" src={comment.avatar} alt="profile" />
         <p>{comment.username}</p>
-        <span>{comment.updated_at}</span>
+        <span>{timeDiff(comment.updated_at)}</span>
     </div>
     <p>{comment.text}</p>
     <div class="comment-upvotes">
-        <span>{comment.upvotes}</span>
+        <span class="upvotes">{comment.upvotes}</span>
         <button
             on:click={() => {
                 upvotes = comment.upvotes;
                 upvotes_reply_id = comment.id;
                 comment.upvotes++;
                 handleUpvotes();
-            }}>^</button
+            }}
         >
+            <ArrowUp size={18} />
+        </button>
     </div>
 
     {#if showReplyBox}
@@ -78,6 +101,12 @@
                 bind:value={replyText}
             />
             <button on:click={handleAddReply}>Post</button>
+            <button
+                on:click={() => {
+                    showReplyBox = false;
+                    replyText = "";
+                }}>Cancel</button
+            >
         </div>
     {:else}
         <button class="reply-btn" on:click={() => (showReplyBox = true)}>
@@ -86,15 +115,24 @@
     {/if}
 
     {#if comment.replies && comment.replies.length > 0}
-        <div class="replies">
-            {#each comment.replies as reply}
-                <svelte:self comment={reply} depth={depth + 1} />
-            {/each}
-        </div>
+        {#if showConvo}
+            <div class="replies">
+                {#each comment.replies as reply}
+                    <svelte:self comment={reply} depth={depth + 1} />
+                {/each}
+            </div>
+        {/if}
     {/if}
 </div>
 
 <style>
+    button {
+        border: none;
+        border-radius: 1000rem;
+        background-color: transparent;
+        color: white;
+        cursor: pointer;
+    }
     .comment {
         border-left: 2px solid #646cff;
         padding-left: 1rem;
@@ -215,5 +253,10 @@
     .replies {
         margin-top: 0.5rem;
         margin-left: 1rem;
+    }
+
+    .upvotes {
+        font-weight: 600;
+        margin-right: 5px;
     }
 </style>

@@ -2,8 +2,9 @@
     import Navbar from "./lib/Navbar.svelte";
     import Dashboard from "./lib/Dashboard.svelte";
     import Auth from "./lib/Auth.svelte";
-    import { onMount, onDestroy } from "svelte";
+    import { onMount } from "svelte";
     import { checkAuth, isLoggedIn } from "./store/auth";
+    import { SvelteToast } from "@zerodevx/svelte-toast";
 
     onMount(() => {
         checkAuth();
@@ -18,11 +19,13 @@
     {:else}
         <Auth />
     {/if}
+    <SvelteToast />
 </main>
 
 <style>
     main {
         min-height: 100vh;
+        min-width: 100vw;
         background: linear-gradient(
             135deg,
             #1e1e1e,
