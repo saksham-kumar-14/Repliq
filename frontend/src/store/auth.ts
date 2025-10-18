@@ -133,7 +133,6 @@ export async function register(
 
     if (data) {
       user.set(data ?? null);
-      alert("Registered!");
 
       try {
         const loginres = await fetch(
